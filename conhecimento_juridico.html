@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo de Termos de Direito</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        #question, #result, #score, #gameOver {
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 5px;
+        }
+        button {
+            padding: 5px 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Termos sobre Direito</h1>
+    <p>Digite o termo referente a definição apresentada:</p>
+    <div id="question"></div>
+    <input type="text" id="answer" placeholder="Digite sua resposta aqui">
+    <button onclick="checkAnswer()">Verificar</button>
+    <div id="result"></div>
+    <div id="score">Acertos: 0 | Erros: 0 | Questão: 1/10</div>
+    <div id="gameOver" style="display: none;"></div>
+    <script>
+     
+     const terms = {
+
+"Prazo entre a publicação da norma e a sua vigência (latim)": "vacatio legis",
+"Prazo em dias em que, caso a Lei não traga em seu próprio texto a data de vigência, será aplicado o Vacatio Legis:": "45 dias",
+"Norma jurídica que visa regulamentar outras normas": "lei de introdução às normas do direito brasileiro", 
+"Hierarquia de normas (siglas)": "cf, ec, lc, lo, mp",
+"Quantitativo de eleitores aptos a votar para que ocorra, nos municípios, o segundo turno para o cargo do poder executivo local?": "200 mil",
+"Aos brasileiros e aos estrangeiros residentes no País é garantido a inviolabilidade de 05 direitos": "igualdade, liberdade, propriedade, segurança, vida",
+"Manifestações judiciais do tipo decisões individuais" : "monocráticas",
+"Manifestações judiciais do tipo decisões coletivas" : "acórdãos",
+"Instrumento jurídico que resume a orientação normativa de um tribunal": "súmula simples",
+"Instrumento jurídico que resume a orientação normativa do Supremo Tribunal Federal (STF)  - entendimento predominante do STF": "súmula vinculante",
+"Interpretação que busca entender uma norma jurídica com base no objetivo ou finalidade que ela visa alcançar": "teleológica",
+"Norma jurídica que perdeu sua validade e eficácia, deixando de produzir efeitos no ordenamento jurídico.": "revogada",
+"Instituto jurídico no Brasil que tem como objetivo assegurar a proteção imediata de um direito, quando há risco de dano grave ou irreparável, ou quando há evidências suficientes que demonstrem a probabilidade do direito alegado.": "tutela de urgência",
+"Reprodução, imitação ou cópia não autorizada de uma obra protegida por direitos autorais.": "contrafação", 
+"Multas de natureza coercitiva fixadas pelo juiz para compelir uma das partes a cumprir determinada obrigação estabelecida em uma decisão judicial": "astreintes",
+"Instrumentos do controle de constitucionalidade no Brasil, na ordem: mais restritas (somente as normas) e a mais ampla (qualquer ato do poder público)": "adin, adpf",
+"O poder constituinte derivado reformador manifesta-se por meio de:": "emendas constitucionais",
+"O poder constituinte derivado decorrente manifesta-se por meio de:": "constituições estaduais",
+"No CPC, o processo começa por iniciativa da XXXX e se desenvolve por YYYY YYYY, salvo as exceções previstas em lei": "parte, impulso oficial",
+"É um método de solução de conflitos em que um terceiro imparcial auxilia as partes a dialogarem e encontrarem uma solução conjunta para o litígio": "mediação",
+"É um método de solução de conflitos em que um terceiro imparcial atua de forma mais proativa para sugerir soluções ao conflito, buscando aproximar as partes para que alcancem um acordo": "conciliação",
+"É um método de solução de conflitos em que as próprias partes, com ou sem auxílio de seus advogados, dialogam diretamente para alcançar uma solução que atenda aos interesses mútuos": "negociação",
+"É um método de solução de conflitos em que as partes escolhem agentes para resolver a controvérsia, com base na autonomia da vontade" : "arbitragem",
+"O poder constituinte XXXX manifesta-se quando uma decisão do STF altera o sentido de um dispositivo constitucional, sem, no entanto, alterar seu texto.": "difuso",
+"Quando o STF ampliou o conceito de família para incluir uniões estáveis entre pessoas do mesmo sexo, o tribunal utilizou o XXXXX XXXXXXXXX XXXXXX" : "poder constituinte difuso",
+
+
+};
+
+        let currentTerm;
+        let correctAnswers = 0;
+        let wrongAnswers = 0;
+        let questionCount = 0;
+        let usedTerms = [];
+
+        function newQuestion() {
+            if (questionCount >= 10) {
+                endGame();
+                return;
+            }
+
+            const portugueseTerms = Object.keys(terms).filter(term => !usedTerms.includes(term));
+            currentTerm = portugueseTerms[Math.floor(Math.random() * portugueseTerms.length)];
+            usedTerms.push(currentTerm);
+            
+            document.getElementById('question').textContent = currentTerm;
+            document.getElementById('answer').value = '';
+            document.getElementById('result').textContent = '';
+            questionCount++;
+            updateScore();
+        }
+
+        function checkAnswer() {
+            const userAnswer = document.getElementById('answer').value.trim().toLowerCase();
+            const correctAnswer = terms[currentTerm].toLowerCase();
+
+            if (userAnswer === correctAnswer) {
+                document.getElementById('result').textContent = 'Correto! Parabéns!';
+                document.getElementById('result').style.color = 'green';
+                correctAnswers++;
+            } else {
+                document.getElementById('result').textContent = `Incorreto. A resposta correta é: ${terms[currentTerm]}`;
+                document.getElementById('result').style.color = 'red';
+                wrongAnswers++;
+            }
+
+            updateScore();
+            setTimeout(newQuestion, 2000);
+        }
+
+        function updateScore() {
+            document.getElementById('score').textContent = `Acertos: ${correctAnswers} | Erros: ${wrongAnswers} | Questão: ${questionCount}/10`;
+        }
+
+        function endGame() {
+            document.getElementById('question').style.display = 'none';
+            document.getElementById('answer').style.display = 'none';
+            document.querySelector('button').style.display = 'none';
+            document.getElementById('result').style.display = 'none';
+            document.getElementById('gameOver').style.display = 'block';
+            document.getElementById('gameOver').innerHTML = `
+                <h2>Fim do Jogo!</h2>
+                <p>Acertos: ${correctAnswers}</p>
+                <p>Erros: ${wrongAnswers}</p>
+                <button onclick="restartGame()">Jogar Novamente</button>
+            `;
+        }
+
+        function restartGame() {
+            correctAnswers = 0;
+            wrongAnswers = 0;
+            questionCount = 0;
+            usedTerms = [];
+            document.getElementById('question').style.display = 'block';
+            document.getElementById('answer').style.display = 'block';
+            document.querySelector('button').style.display = 'inline-block';
+            document.getElementById('result').style.display = 'block';
+            document.getElementById('gameOver').style.display = 'none';
+            newQuestion();
+        }
+
+        newQuestion();
+    </script>
+</body>
+</html>
+
+
+
+
+
