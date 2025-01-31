@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo de Termos de Direito</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        #question, #result, #score, #gameOver {
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 5px;
+        }
+        button {
+            padding: 5px 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Exercício sobre Python</h1>
+    <p>Digite o termo referente a definição apresentada:</p>
+    <div id="question"></div>
+    <input type="text" id="answer" placeholder="Digite sua resposta aqui">
+    <button onclick="checkAnswer()">Verificar</button>
+    <div id="result"></div>
+    <div id="score">Acertos: 0 | Erros: 0 | Questão: 1/10</div>
+    <div id="gameOver" style="display: none;"></div>
+    <script>
+     
+     const terms = {
+
+"O LED vermelho (led_red) está conectado ao pino 5 do Arduino.": "int led_red=5;",
+"O LED amarelo (led_yellow) está conectado ao pino 6 do Arduino.": "int led_yellow = 6;",
+"Defina o pino do LED amarelo (led_yellow) como saída.": "pinMode(led_yellow, OUTPUT);",
+"Qual a função que será executada uma única vez quando o Arduino é ligado.": "void setup() {}",
+"Qual a função que fará que o código dentro dela seja executado repetidamente.": "void loop() {}",
+"Ligue o LED amarelo (led_yellow).": "digitalWrite(led_yellow, HIGH);",
+"Ligue o LED amarelo (led_yellow) e apague o LED vermelho (led_red).": "digitalWrite(led_yellow, HIGH); digitalWrite(led_red, LOW);", 
+"Espere 2 segundos.": "delay(2000);",
+"Lê o estado de um botão (botao).": "digitalRead(botao);",
+"Funções usadas para controlar e interagir com os pinos digitais da placa.": "digitalRead(), digitalWrite(), pinMode()",
+"Sintaxe da função digitalWrite.": "digitalWrite(pino, valor)",
+"Sintaxe da função digitalRead.": "digitalRead(pino)",
+"Sintaxe da função pinMode.": "pinMode(pino, modo)",
+"Na função digitalWrite, quais são os dois valores possíveis.": "HIGH, LOW",
+"Na função pinMode, quais são os dois modos possíveis.": "INPUT, OUTPUT",
+"Quais as 3 partes de um programa básico em Arduíno.": "declaração das variáveis, configuração inicial, loop",
+
+};
+
+        let currentTerm;
+        let correctAnswers = 0;
+        let wrongAnswers = 0;
+        let questionCount = 0;
+        let usedTerms = [];
+
+        function newQuestion() {
+            if (questionCount >= 10) {
+                endGame();
+                return;
+            }
+
+            const portugueseTerms = Object.keys(terms).filter(term => !usedTerms.includes(term));
+            currentTerm = portugueseTerms[Math.floor(Math.random() * portugueseTerms.length)];
+            usedTerms.push(currentTerm);
+            
+            document.getElementById('question').textContent = currentTerm;
+            document.getElementById('answer').value = '';
+            document.getElementById('result').textContent = '';
+            questionCount++;
+            updateScore();
+        }
+
+        function checkAnswer() {
+            const userAnswer = document.getElementById('answer').value.trim().toLowerCase();
+            const correctAnswer = terms[currentTerm].toLowerCase();
+
+            if (userAnswer === correctAnswer) {
+                document.getElementById('result').textContent = 'Correto! Parabéns!';
+                document.getElementById('result').style.color = 'green';
+                correctAnswers++;
+            } else {
+                document.getElementById('result').textContent = `Incorreto. A resposta correta é: ${terms[currentTerm]}`;
+                document.getElementById('result').style.color = 'red';
+                wrongAnswers++;
+            }
+
+            updateScore();
+            setTimeout(newQuestion, 3000);
+        }
+
+        function updateScore() {
+            document.getElementById('score').textContent = `Acertos: ${correctAnswers} | Erros: ${wrongAnswers} | Questão: ${questionCount}/10`;
+        }
+
+        function endGame() {
+            document.getElementById('question').style.display = 'none';
+            document.getElementById('answer').style.display = 'none';
+            document.querySelector('button').style.display = 'none';
+            document.getElementById('result').style.display = 'none';
+            document.getElementById('gameOver').style.display = 'block';
+            document.getElementById('gameOver').innerHTML = `
+                <h2>Fim do Jogo!</h2>
+                <p>Acertos: ${correctAnswers}</p>
+                <p>Erros: ${wrongAnswers}</p>
+                <button onclick="restartGame()">Jogar Novamente</button>
+            `;
+        }
+
+        function restartGame() {
+            correctAnswers = 0;
+            wrongAnswers = 0;
+            questionCount = 0;
+            usedTerms = [];
+            document.getElementById('question').style.display = 'block';
+            document.getElementById('answer').style.display = 'block';
+            document.querySelector('button').style.display = 'inline-block';
+            document.getElementById('result').style.display = 'block';
+            document.getElementById('gameOver').style.display = 'none';
+            newQuestion();
+        }
+
+        newQuestion();
+    </script>
+</body>
