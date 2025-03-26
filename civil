@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo de Termos de Direito</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        #question, #result, #score, #gameOver {
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 5px;
+        }
+        button {
+            padding: 5px 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Termos sobre Direito</h1>
+    <p>Digite o termo referente a definição apresentada:</p>
+    <div id="question"></div>
+    <input type="text" id="answer" placeholder="Digite sua resposta aqui">
+    <button onclick="checkAnswer()">Verificar</button>
+    <div id="result"></div>
+    <div id="score">Acertos: 0 | Erros: 0 | Questão: 1/10</div>
+    <div id="gameOver" style="display: none;"></div>
+    <script>
+     
+     const terms = {
+
+"Direito é um ...": "conjunto de normas para disciplinar a vida em sociedade",
+"Tipos de Direito. O direito XXXXX são as XXXX, enquanto o direito YYYYYY é a YYYYYY de exigir um direito baseado nessas normas." : "objetivo, normas, subjetivo, possibilidade",
+"Quais são as duas categorias do Direito Subjetivo": "potestativo, prestacional",
+"Direito subjetivo que altera situação jurídica de outrem sem necessidade de consentimento.": "potestativo",
+"Direito subjetivo que exige uma ação ou omissão da outra parte": "prestacional",
+"Qual o tipo de direito subjetivo relacionado ao fato do empregado de receber salário pelo trabalho realizado": "prestacional",
+"Qual o tipo de direito subjetivo relacionado ao fato de um empregador rescindir um contrato de trabalho sem justa causa, desde que pague as verbas rescisórias.": "potestativo",
+"Qual o tipo de direito subjetivo relacionado ao fato de uma pessoa decidir se divorciar e o referido cônjuge não pode impedir essa decisão": "potestativo",
+"Qual o tipo de direito subjetivo relacionado ao fato da revogação de doação por ingratidão do donatário": "potestativo",
+"Qual o tipo de direito subjetivo relacionado ao fato do Estado ter a obrigação de fornecer atendimento médico e medicamentos à população por meio do SUS.": "prestacional",
+"Tipo de Direito que representa o conjunto de normas em vigor num lugar e tempo específicos": "positivo",
+"Tipo de Direito que representa o sistema geral de normas jurídicas, independente do momento ou local de vigência." : "objetivo",
+         
+
+
+};
+
+        let currentTerm;
+        let correctAnswers = 0;
+        let wrongAnswers = 0;
+        let questionCount = 0;
+        let usedTerms = [];
+
+        function newQuestion() {
+            if (questionCount >= 10) {
+                endGame();
+                return;
+            }
+
+            const portugueseTerms = Object.keys(terms).filter(term => !usedTerms.includes(term));
+            currentTerm = portugueseTerms[Math.floor(Math.random() * portugueseTerms.length)];
+            usedTerms.push(currentTerm);
+            
+            document.getElementById('question').textContent = currentTerm;
+            document.getElementById('answer').value = '';
+            document.getElementById('result').textContent = '';
+            questionCount++;
+            updateScore();
+        }
+
+        function checkAnswer() {
+            const userAnswer = document.getElementById('answer').value.trim().toLowerCase();
+            const correctAnswer = terms[currentTerm].toLowerCase();
+
+            if (userAnswer === correctAnswer) {
+                document.getElementById('result').textContent = 'Correto! Parabéns!';
+                document.getElementById('result').style.color = 'green';
+                correctAnswers++;
+            } else {
+                document.getElementById('result').textContent = `Incorreto. A resposta correta é: ${terms[currentTerm]}`;
+                document.getElementById('result').style.color = 'red';
+                wrongAnswers++;
+            }
+
+            updateScore();
+            setTimeout(newQuestion, 2000);
+        }
+
+        function updateScore() {
+            document.getElementById('score').textContent = `Acertos: ${correctAnswers} | Erros: ${wrongAnswers} | Questão: ${questionCount}/10`;
+        }
+
+        function endGame() {
+            document.getElementById('question').style.display = 'none';
+            document.getElementById('answer').style.display = 'none';
+            document.querySelector('button').style.display = 'none';
+            document.getElementById('result').style.display = 'none';
+            document.getElementById('gameOver').style.display = 'block';
+            document.getElementById('gameOver').innerHTML = `
+                <h2>Fim do Jogo!</h2>
+                <p>Acertos: ${correctAnswers}</p>
+                <p>Erros: ${wrongAnswers}</p>
+                <button onclick="restartGame()">Jogar Novamente</button>
+            `;
+        }
+
+        function restartGame() {
+            correctAnswers = 0;
+            wrongAnswers = 0;
+            questionCount = 0;
+            usedTerms = [];
+            document.getElementById('question').style.display = 'block';
+            document.getElementById('answer').style.display = 'block';
+            document.querySelector('button').style.display = 'inline-block';
+            document.getElementById('result').style.display = 'block';
+            document.getElementById('gameOver').style.display = 'none';
+            newQuestion();
+        }
+
+        newQuestion();
+    </script>
+</body>
+</html>
