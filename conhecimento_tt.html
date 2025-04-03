@@ -1,0 +1,139 @@
+
+
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo de Termos de Direito</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        #question, #result, #score, #gameOver {
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 5px;
+        }
+        button {
+            padding: 5px 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Termos sobre Direito</h1>
+    <p>Digite o termo referente a definição apresentada:</p>
+    <div id="question"></div>
+    <input type="text" id="answer" placeholder="Digite sua resposta aqui">
+    <button onclick="checkAnswer()">Verificar</button>
+    <div id="result"></div>
+    <div id="score">Acertos: 0 | Erros: 0 | Questão: 1/10</div>
+    <div id="gameOver" style="display: none;"></div>
+    <script>
+     
+     const terms = {
+
+"Quais são as modalidades de contratos que o INPI averba ou registra (amparados por direito de propriedade industrial, na ordem)?": "cessão, licença, assistência técnica, fornecimento de tecnologia, franquia",
+"Contrato que implica na transferência de titularidade": "cessão", 
+"Para requerer a averbação de um contrato de cessão de patente é necessário que a patente esteja regularmente XXX ou XXX pelo INPI,": "depositada, concedida", 
+"Fato de registrar oficialmente uma alteração, adição ou anotação em um documento já existente, tornando essa modificação pública e legalmente reconhecida.": "averbar",
+"Número da lei que regula direitos e obrigações relativos à propriedade industrial no Brasil [formato N.NNN/AA]": "9.279/96",
+"Tipo de recurso utilizado no direito processual civil para contestar decisões interlocutórias (aquelas tomadas pelo juiz no decorrer do processo, antes da sentença final). Ele é direcionado ao tribunal de instância superior, que pode reformar ou manter a decisão questionada.": "agravo de instrumento",
+"Comete crime contra registro de marca quem XXXX ou XXXX marca registrada": "altera, reproduz",
+"Comete crime contra registro de marca quem XXXX ou XXXX marca registrada": "altera, reproduz",
+"Comete crime contra registro de marca quem XXXX ou XXXX marca registrada": "altera, reproduz",
+"Comete crime contra registro de marca quem XXXX ou XXXX marca registrada": "altera, reproduz",
+
+
+};
+
+        let currentTerm;
+        let correctAnswers = 0;
+        let wrongAnswers = 0;
+        let questionCount = 0;
+        let usedTerms = [];
+
+        function newQuestion() {
+            if (questionCount >= 10) {
+                endGame();
+                return;
+            }
+
+            const portugueseTerms = Object.keys(terms).filter(term => !usedTerms.includes(term));
+            currentTerm = portugueseTerms[Math.floor(Math.random() * portugueseTerms.length)];
+            usedTerms.push(currentTerm);
+            
+            document.getElementById('question').textContent = currentTerm;
+            document.getElementById('answer').value = '';
+            document.getElementById('result').textContent = '';
+            questionCount++;
+            updateScore();
+        }
+
+        function checkAnswer() {
+            const userAnswer = document.getElementById('answer').value.trim().toLowerCase();
+            const correctAnswer = terms[currentTerm].toLowerCase();
+
+            if (userAnswer === correctAnswer) {
+                document.getElementById('result').textContent = 'Correto! Parabéns!';
+                document.getElementById('result').style.color = 'green';
+                correctAnswers++;
+            } else {
+                document.getElementById('result').textContent = `Incorreto. A resposta correta é: ${terms[currentTerm]}`;
+                document.getElementById('result').style.color = 'red';
+                wrongAnswers++;
+            }
+
+            updateScore();
+            setTimeout(newQuestion, 4000);
+        }
+
+        function updateScore() {
+            document.getElementById('score').textContent = `Acertos: ${correctAnswers} | Erros: ${wrongAnswers} | Questão: ${questionCount}/10`;
+        }
+
+        function endGame() {
+            document.getElementById('question').style.display = 'none';
+            document.getElementById('answer').style.display = 'none';
+            document.querySelector('button').style.display = 'none';
+            document.getElementById('result').style.display = 'none';
+            document.getElementById('gameOver').style.display = 'block';
+            document.getElementById('gameOver').innerHTML = `
+                <h2>Fim do Jogo!</h2>
+                <p>Acertos: ${correctAnswers}</p>
+                <p>Erros: ${wrongAnswers}</p>
+                <button onclick="restartGame()">Jogar Novamente</button>
+            `;
+        }
+
+        function restartGame() {
+            correctAnswers = 0;
+            wrongAnswers = 0;
+            questionCount = 0;
+            usedTerms = [];
+            document.getElementById('question').style.display = 'block';
+            document.getElementById('answer').style.display = 'block';
+            document.querySelector('button').style.display = 'inline-block';
+            document.getElementById('result').style.display = 'block';
+            document.getElementById('gameOver').style.display = 'none';
+            newQuestion();
+        }
+
+        newQuestion();
+    </script>
+</body>
+</html>
+
+
+
+
